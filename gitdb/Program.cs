@@ -7,6 +7,8 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Forms;
 
 namespace gitdb
 {
@@ -22,6 +24,7 @@ namespace gitdb
             "coordinateqa"
         };        
 
+        [STAThread]
         static void Main(string[] args)
         {
             List<string> serverList = DbUtils.GetServers();
@@ -68,54 +71,56 @@ namespace gitdb
 
             string desiredObject = GetObjectChoice();
 
-            ScriptingOptions options = new ScriptingOptions
+            ScriptingOptions scriptOptions = new ScriptingOptions
             {
-                ScriptDrops = false,
+                ScriptDrops = true,
                 WithDependencies = false,
-                IncludeHeaders = true,
-                Indexes = true,                
-                AllowSystemObjects = false,
-                IncludeIfNotExists = true
+                AnsiPadding = true,                
+                Indexes = true,
+                AllowSystemObjects = false,                
+                ScriptBatchTerminator = true,
+                FullTextIndexes = false                
             };
 
+            Clipboard.Clear();
             if (tables.Contains(desiredObject, SchemaChoice))
             {
-                var obj = tables[desiredObject, SchemaChoice].Script(options);
-                
+                var obj = tables[desiredObject, SchemaChoice].Script(scriptOptions);
+                                
                 foreach(string s in obj)
                 {
-                    Console.WriteLine(s);                    
+                    Clipboard.SetText(Clipboard.GetText() + s + Environment.NewLine);
                 }
             }
             else if (procs.Contains(desiredObject, SchemaChoice))
             {
-                var obj = procs[desiredObject, SchemaChoice].Script(options);
+                var obj = procs[desiredObject, SchemaChoice].Script(scriptOptions);
 
                 foreach (string s in obj)
                 {
-                    Console.WriteLine(s);
+                    Clipboard.SetText(Clipboard.GetText() + s + Environment.NewLine);
                 }
             }
             else if (funcs.Contains(desiredObject, SchemaChoice))
             {
-                var obj = funcs[desiredObject, SchemaChoice].Script(options);
+                var obj = funcs[desiredObject, SchemaChoice].Script(scriptOptions);
 
                 foreach (string s in obj)
                 {
-                    Console.WriteLine(s);
+                    Clipboard.SetText(Clipboard.GetText() + s + Environment.NewLine);
                 }
             }
             else if (views.Contains(desiredObject, SchemaChoice))
             {
-                var obj = views[desiredObject, SchemaChoice].Script(options);
+                var obj = views[desiredObject, SchemaChoice].Script(scriptOptions);
 
                 foreach (string s in obj)
                 {
-                    Console.WriteLine(s);
+                    Clipboard.SetText(Clipboard.GetText() + s + Environment.NewLine);
                 }
             }
 
-            CliUtils.PressEscapeToQuit();
+            Application.Exit();
         }
 
         private static string GetChoice(string choiceDomain, List<string> options)
@@ -142,9 +147,9 @@ namespace gitdb
             return Console.ReadLine();            
         }
 
-        private static string GetRepoChoice()
-        {
+        //private static string GetRepoChoice()
+        //{
 
-        }
+        //}
     }
 }

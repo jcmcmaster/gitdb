@@ -12,3 +12,17 @@ C:\Projects\gitdb\gitdb\gitdb\bin\Debug\Microsoft.SqlServer.SqlClrProvider.dll
 C:\Projects\gitdb\gitdb\gitdb\bin\Debug\Microsoft.SqlServer.Management.Sdk.Sfc.dll
 C:\Projects\gitdb\gitdb\gitdb\bin\Debug\Microsoft.SqlServer.SqlEnum.dll
 C:\Projects\gitdb\gitdb\gitdb\obj\Debug\gitdb.csproj.CopyComplete
+C:\Projects\gitdb\gitdb\bin\Debug\gitdb.exe.config
+C:\Projects\gitdb\gitdb\bin\Debug\gitdb.exe
+C:\Projects\gitdb\gitdb\bin\Debug\gitdb.pdb
+C:\Projects\gitdb\gitdb\bin\Debug\Microsoft.SqlServer.ConnectionInfo.dll
+C:\Projects\gitdb\gitdb\bin\Debug\Microsoft.SqlServer.Smo.dll
+C:\Projects\gitdb\gitdb\bin\Debug\Microsoft.SqlServer.SqlClrProvider.dll
+C:\Projects\gitdb\gitdb\bin\Debug\Microsoft.SqlServer.Management.Sdk.Sfc.dll
+C:\Projects\gitdb\gitdb\bin\Debug\Microsoft.SqlServer.SqlEnum.dll
+C:\Projects\gitdb\gitdb\obj\Debug\gitdb.csprojResolveAssemblyReference.cache
+C:\Projects\gitdb\gitdb\obj\Debug\gitdb.exe.config
+C:\Projects\gitdb\gitdb\obj\Debug\gitdb.csproj.CoreCompileInputs.cache
+C:\Projects\gitdb\gitdb\obj\Debug\gitdb.csproj.CopyComplete
+C:\Projects\gitdb\gitdb\obj\Debug\gitdb.exe
+C:\Projects\gitdb\gitdb\obj\Debug\gitdb.pdb
