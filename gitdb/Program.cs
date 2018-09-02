@@ -27,49 +27,22 @@ namespace gitdb
         [STAThread]
         static void Main(string[] args)
         {
-            List<string> serverList = DbUtils.GetServers();
-            if (serverList.Count > 1)
-            {
-                ServerChoice = GetChoice("Server", serverList);
-            }
-            else
-            {
-                ServerChoice = serverList.First();
-            }
+            Console.WriteLine("Welcome to gitdb BETA");
 
-            List<string> dbList = DbUtils.GetDataBases(ServerChoice);
-            if (dbList.Count > 1)
-            {
-                DbChoice = GetChoice("Database", dbList);
-            }
-            else
-            {
-                DbChoice = dbList.First();
-            }
-
-            List<string> schemaList = DbUtils.GetSchemas(ServerChoice, DbChoice);
-            if (schemaList.Count > 1)
-            {
-                SchemaChoice = GetChoice("Schema", schemaList);
-            }
-            else
-            {
-                SchemaChoice = schemaList.First();
-            }
-
-
+            ServerChoice = GetUserSelection<string>("Select a server:", DbUtils.GetServers());
+            DbChoice = GetUserSelection<string>("Select a database:", DbUtils.GetDataBases(ServerChoice));
+            SchemaChoice = GetUserSelection<string>("Select a schema", DbUtils.GetSchemas(ServerChoice, DbChoice));
 
             var server = new Server(ServerChoice);
-            var db = server.Databases[DbChoice];
+            Database db = server.Databases[DbChoice];
 
-            var tables = db.Tables;
-            var procs = db.StoredProcedures;
-            var funcs = db.UserDefinedFunctions;
-            var views = db.Views;
-
-
+            TableCollection tables = db.Tables;
+            StoredProcedureCollection procs = db.StoredProcedures;
+            UserDefinedFunctionCollection funcs = db.UserDefinedFunctions;
+            ViewCollection views = db.Views;
 
             string desiredObject = GetObjectChoice();
+            Console.WriteLine(Environment.NewLine + "Working...");
 
             ScriptingOptions scriptOptions = new ScriptingOptions
             {
@@ -81,6 +54,7 @@ namespace gitdb
                 ScriptBatchTerminator = true,
                 FullTextIndexes = false                
             };
+
 
             Clipboard.Clear();
             if (tables.Contains(desiredObject, SchemaChoice))
@@ -123,28 +97,41 @@ namespace gitdb
             Application.Exit();
         }
 
-        private static string GetChoice(string choiceDomain, List<string> options)
+        /// <summary>
+        /// Enumerates each option in a list and allows the user to select an object from the list
+        /// </summary>
+        /// <param name="prompt"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        private static T GetUserSelection<T>(string prompt, IReadOnlyList<object> options)
         {
-            Console.WriteLine("Select a " + choiceDomain + ": ");
+            if (options.Count == 0) throw new Exception("Empty list provided to GetUserSelection");
+            if (options.Count == 1) return (T)options.First();
 
-            var serverOptions = new Dictionary<int, string>();
+            Console.WriteLine(Environment.NewLine + prompt + Environment.NewLine);
 
             for (int i = 0; i < options.Count; i++)
             {
-                serverOptions.Add(i, options[i]);
                 Console.WriteLine(i + ": " + options[i]);
             }
 
-            int serverChoice = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine();
 
-            return options[serverChoice];
+            int selectionIndex = Convert.ToInt32(Console.ReadLine());
+
+            Console.WriteLine();
+            Console.WriteLine(options[selectionIndex] + " selected.");
+
+            return (T)options[selectionIndex];
         }
 
         private static string GetObjectChoice()
         {
-            Console.WriteLine("Object name: ");
+            Console.WriteLine();
+            Console.WriteLine("Specify a database object:");
+            Console.WriteLine();
 
-            return Console.ReadLine();            
+            return Console.ReadLine();
         }
 
         //private static string GetRepoChoice()
