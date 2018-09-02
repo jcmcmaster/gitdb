@@ -22,7 +22,7 @@ namespace gitdb
         {
             "connectqa",
             "coordinateqa"
-        };        
+        };
 
         [STAThread]
         static void Main(string[] args)
@@ -73,7 +73,7 @@ namespace gitdb
 
             ScriptingOptions scriptOptions = new ScriptingOptions
             {
-                ScriptDrops = true,
+                ScriptDrops = false,
                 WithDependencies = false,
                 AnsiPadding = true,                
                 Indexes = true,
