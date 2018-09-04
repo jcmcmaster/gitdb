@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using View = Microsoft.SqlServer.Management.Smo.View;
 
 namespace gitdb
 {
@@ -30,13 +31,15 @@ namespace gitdb
             Indexes = true,
             AllowSystemObjects = false,
             ScriptBatchTerminator = true,
-            FullTextIndexes = false
+            FullTextIndexes = false,
+            IncludeDatabaseContext = false
         };
 
         [STAThread]
         private static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to gitdb BETA v0.1");
+            Console.WriteLine();
+            Console.WriteLine("Welcome to gitdb BETA v0.2");
 
             ServerChoice = new Server(CliUtils.GetUserSelection<string>("Select a server:", DbUtils.GetSqlServers()));
 
@@ -66,54 +69,58 @@ namespace gitdb
                 if (tables.Contains(ObjectChoice, SchemaChoice.Name))
                 {
                     found = true;
-
-                    scriptParts = tables[ObjectChoice, SchemaChoice.Name].Script(ScriptOptions);
+                    Table specifiedTable = tables[ObjectChoice, SchemaChoice.Name];
+                    scriptParts = specifiedTable.Script(ScriptOptions);
 
                     foreach (string s in scriptParts)
                     {
                         ObjectScript += s + Environment.NewLine;
                     }
 
-                    File.WriteAllText(Environment.CurrentDirectory + "/Tables/" + SchemaChoice + ObjectChoice + ".sql", ObjectScript);
+                    File.WriteAllText(Environment.CurrentDirectory + "/Tables/" + SchemaChoice.Name + "." + specifiedTable.Name + ".sql", ObjectScript);
                 }
                 else if (procs.Contains(ObjectChoice, SchemaChoice.Name))
                 {
                     found = true;
-
-                    scriptParts = procs[ObjectChoice, SchemaChoice.Name].Script(ScriptOptions);
+                    StoredProcedure specifiedProc = procs[ObjectChoice, SchemaChoice.Name];
+                    scriptParts = specifiedProc.Script(ScriptOptions);
 
                     foreach (string s in scriptParts)
                     {
                         ObjectScript += s + Environment.NewLine;
                     }
 
-                    File.WriteAllText(Environment.CurrentDirectory + "/Tables/" + SchemaChoice + ObjectChoice + ".sql", ObjectScript);
+                    File.WriteAllText(Environment.CurrentDirectory + "/Procedures/" + SchemaChoice.Name + "." + specifiedProc.Name + ".sql", ObjectScript);
                 }
                 else if (funcs.Contains(ObjectChoice, SchemaChoice.Name))
                 {
                     found = true;
-
-                    scriptParts = funcs[ObjectChoice, SchemaChoice.Name].Script(ScriptOptions);
+                    UserDefinedFunction specifiedFunc = funcs[ObjectChoice, SchemaChoice.Name];
+                    scriptParts = specifiedFunc.Script(ScriptOptions);
 
                     foreach (string s in scriptParts)
                     {
                         ObjectScript += s + Environment.NewLine;
                     }
 
-                    File.WriteAllText(Environment.CurrentDirectory + "/Tables/" + SchemaChoice + ObjectChoice + ".sql", ObjectScript);
+                    File.WriteAllText(Environment.CurrentDirectory + "/Functions/" + SchemaChoice.Name + "." + specifiedFunc.Name + ".sql", ObjectScript);
                 }
                 else if (views.Contains(ObjectChoice, SchemaChoice.Name))
                 {
                     found = true;
-
-                    scriptParts = views[ObjectChoice, SchemaChoice.Name].Script(ScriptOptions);
+                    View specifiedView = views[ObjectChoice, SchemaChoice.Name];
+                    scriptParts = specifiedView.Script(ScriptOptions);
 
                     foreach (string s in scriptParts)
                     {
                         ObjectScript += s + Environment.NewLine;
                     }
 
-                    File.WriteAllText(Environment.CurrentDirectory + "/Tables/" + SchemaChoice + ObjectChoice + ".sql", ObjectScript);
+                    File.WriteAllText(Environment.CurrentDirectory + "/Views/" + SchemaChoice.Name + "." + specifiedView.Name + ".sql", ObjectScript);
+                }
+                else
+                {
+                    Console.WriteLine("Object " + ObjectChoice + " not found in database.");
                 }
             }
 
