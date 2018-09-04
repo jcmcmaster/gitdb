@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -13,14 +14,27 @@ using System.Windows.Forms;
 
 namespace gitdb
 {
-    class Program
+    internal class Program
     {
         public static Server ServerChoice { get; set; }
         public static Database DbChoice { get; set; }
         public static Schema SchemaChoice { get; set; }
+        public static string ObjectChoice { get; set; }
+        public static string ObjectScript { get; set; }
+
+        public static ScriptingOptions ScriptOptions = new ScriptingOptions
+        {
+            ScriptDrops = false,
+            WithDependencies = false,
+            AnsiPadding = true,
+            Indexes = true,
+            AllowSystemObjects = false,
+            ScriptBatchTerminator = true,
+            FullTextIndexes = false
+        };
 
         [STAThread]
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Console.WriteLine("Welcome to gitdb BETA v0.1");
 
@@ -39,55 +53,67 @@ namespace gitdb
             UserDefinedFunctionCollection funcs = DbChoice.UserDefinedFunctions;
             ViewCollection views = DbChoice.Views;
 
-            string desiredObject = CliUtils.GetUserInput("Specify a database object:");
-            Console.WriteLine("Working...");
+            bool found = false;
+            ObjectScript = string.Empty;
 
-            ScriptingOptions scriptOptions = new ScriptingOptions
+            while (!found)
             {
-                ScriptDrops = false,
-                WithDependencies = false,
-                AnsiPadding = true,                
-                Indexes = true,
-                AllowSystemObjects = false,                
-                ScriptBatchTerminator = true,
-                FullTextIndexes = false                
-            };
+                ObjectChoice = CliUtils.GetUserInput("Specify a database object in the current directory:");
 
-            Clipboard.Clear();
-            if (tables.Contains(desiredObject, SchemaChoice.Name))
-            {
-                StringCollection obj = tables[desiredObject, SchemaChoice.Name].Script(scriptOptions);
-                                
-                foreach(string s in obj)
+                Console.WriteLine("Working...");
+
+                StringCollection scriptParts;
+                if (tables.Contains(ObjectChoice, SchemaChoice.Name))
                 {
-                    Clipboard.SetText(Clipboard.GetText() + s + Environment.NewLine);
+                    found = true;
+
+                    scriptParts = tables[ObjectChoice, SchemaChoice.Name].Script(ScriptOptions);
+
+                    foreach (string s in scriptParts)
+                    {
+                        ObjectScript += s + Environment.NewLine;
+                    }
+
+                    File.WriteAllText(Environment.CurrentDirectory + "/Tables/" + SchemaChoice + ObjectChoice + ".sql", ObjectScript);
                 }
-            }
-            else if (procs.Contains(desiredObject, SchemaChoice.Name))
-            {
-                StringCollection obj = procs[desiredObject, SchemaChoice.Name].Script(scriptOptions);
-
-                foreach (string s in obj)
+                else if (procs.Contains(ObjectChoice, SchemaChoice.Name))
                 {
-                    Clipboard.SetText(Clipboard.GetText() + s + Environment.NewLine);
+                    found = true;
+
+                    scriptParts = procs[ObjectChoice, SchemaChoice.Name].Script(ScriptOptions);
+
+                    foreach (string s in scriptParts)
+                    {
+                        ObjectScript += s + Environment.NewLine;
+                    }
+
+                    File.WriteAllText(Environment.CurrentDirectory + "/Tables/" + SchemaChoice + ObjectChoice + ".sql", ObjectScript);
                 }
-            }
-            else if (funcs.Contains(desiredObject, SchemaChoice.Name))
-            {
-                StringCollection obj = funcs[desiredObject, SchemaChoice.Name].Script(scriptOptions);
-
-                foreach (string s in obj)
+                else if (funcs.Contains(ObjectChoice, SchemaChoice.Name))
                 {
-                    Clipboard.SetText(Clipboard.GetText() + s + Environment.NewLine);
+                    found = true;
+
+                    scriptParts = funcs[ObjectChoice, SchemaChoice.Name].Script(ScriptOptions);
+
+                    foreach (string s in scriptParts)
+                    {
+                        ObjectScript += s + Environment.NewLine;
+                    }
+
+                    File.WriteAllText(Environment.CurrentDirectory + "/Tables/" + SchemaChoice + ObjectChoice + ".sql", ObjectScript);
                 }
-            }
-            else if (views.Contains(desiredObject, SchemaChoice.Name))
-            {
-                StringCollection obj = views[desiredObject, SchemaChoice.Name].Script(scriptOptions);
-
-                foreach (string s in obj)
+                else if (views.Contains(ObjectChoice, SchemaChoice.Name))
                 {
-                    Clipboard.SetText(Clipboard.GetText() + s + Environment.NewLine);
+                    found = true;
+
+                    scriptParts = views[ObjectChoice, SchemaChoice.Name].Script(ScriptOptions);
+
+                    foreach (string s in scriptParts)
+                    {
+                        ObjectScript += s + Environment.NewLine;
+                    }
+
+                    File.WriteAllText(Environment.CurrentDirectory + "/Tables/" + SchemaChoice + ObjectChoice + ".sql", ObjectScript);
                 }
             }
 
