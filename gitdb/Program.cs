@@ -25,13 +25,12 @@ namespace gitdb
 
         public static ScriptingOptions ScriptOptions = new ScriptingOptions
         {
-            ScriptDrops = false,
-            WithDependencies = false,
             AnsiPadding = true,
             Indexes = true,
             AllowSystemObjects = false,
             ScriptBatchTerminator = true,
-            FullTextIndexes = false,
+            DriAll = true,
+            FullTextIndexes = true,
             IncludeDatabaseContext = false
         };
 
