@@ -10,9 +10,7 @@ namespace gitdb.Utils
     {
         public static void PressEscapeToQuit()
         {
-            Console.WriteLine(Environment.NewLine);
-
-            Console.WriteLine("Press ESC to quit or any key to continue.");
+            Console.WriteLine("Press ESC to quit or any other key to continue.");
 
             ConsoleKey nextKey = Console.ReadKey(true).Key;
             if (nextKey == ConsoleKey.Escape)

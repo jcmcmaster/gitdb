@@ -19,5 +19,10 @@ namespace gitdb.Utils
                 return tb;
             }
         }
+
+        public static bool Has(this string[] arr, string val)
+        {
+            return Array.FindIndex(arr, x => x == val) > -1;
+        }
     }
 }
