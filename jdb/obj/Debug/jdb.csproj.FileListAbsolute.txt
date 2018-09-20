@@ -1,0 +1,17 @@
+C:\Projects\jdb\jdb\bin\Debug\jdb.exe.config
+C:\Projects\jdb\jdb\bin\Debug\jdb.exe
+C:\Projects\jdb\jdb\bin\Debug\jdb.pdb
+C:\Projects\jdb\jdb\bin\Debug\Microsoft.SqlServer.ConnectionInfo.dll
+C:\Projects\jdb\jdb\bin\Debug\Microsoft.SqlServer.Smo.dll
+C:\Projects\jdb\jdb\bin\Debug\Newtonsoft.Json.dll
+C:\Projects\jdb\jdb\bin\Debug\Microsoft.SqlServer.SqlClrProvider.dll
+C:\Projects\jdb\jdb\bin\Debug\Microsoft.SqlServer.Management.Sdk.Sfc.dll
+C:\Projects\jdb\jdb\bin\Debug\Microsoft.SqlServer.SqlEnum.dll
+C:\Projects\jdb\jdb\bin\Debug\Microsoft.SqlServer.Dmf.Common.dll
+C:\Projects\jdb\jdb\bin\Debug\Microsoft.SqlServer.Diagnostics.STrace.dll
+C:\Projects\jdb\jdb\bin\Debug\Microsoft.SqlServer.ServiceBrokerEnum.dll
+C:\Projects\jdb\jdb\bin\Debug\Newtonsoft.Json.xml
+C:\Projects\jdb\jdb\obj\Debug\jdb.csproj.CoreCompileInputs.cache
+C:\Projects\jdb\jdb\obj\Debug\jdb.csproj.CopyComplete
+C:\Projects\jdb\jdb\obj\Debug\jdb.exe
+C:\Projects\jdb\jdb\obj\Debug\jdb.pdb
