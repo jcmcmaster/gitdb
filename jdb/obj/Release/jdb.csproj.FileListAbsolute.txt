@@ -11,7 +11,6 @@ C:\Projects\jdb\jdb\bin\Release\Microsoft.SqlServer.Dmf.Common.dll
 C:\Projects\jdb\jdb\bin\Release\Microsoft.SqlServer.Diagnostics.STrace.dll
 C:\Projects\jdb\jdb\bin\Release\Microsoft.SqlServer.ServiceBrokerEnum.dll
 C:\Projects\jdb\jdb\bin\Release\Newtonsoft.Json.xml
-C:\Projects\jdb\jdb\obj\Release\jdb.csprojAssemblyReference.cache
 C:\Projects\jdb\jdb\obj\Release\jdb.csproj.CoreCompileInputs.cache
 C:\Projects\jdb\jdb\obj\Release\jdb.csproj.CopyComplete
 C:\Projects\jdb\jdb\obj\Release\jdb.exe
