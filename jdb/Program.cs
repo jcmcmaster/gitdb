@@ -99,8 +99,14 @@ namespace jdb
 
                 while (!found)
                 {
-                    ObjectChoice =
-                        CliUtils.GetUserInput("Specify an object in the selected database (schema.objectname):");
+                    Console.WriteLine();
+                    Console.Write("Specify an object in the selected database (");
+                    CliUtils.WriteInColor("schema", ConsoleColor.DarkBlue);
+                    Console.Write(".");
+                    CliUtils.WriteInColor("object", ConsoleColor.Blue);
+                    Console.WriteLine(")");
+
+                    ObjectChoice = Console.ReadLine() ?? "";
 
                     if (!ObjectChoice.Contains('.'))
                     {

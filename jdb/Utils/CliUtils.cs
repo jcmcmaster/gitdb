@@ -17,6 +17,7 @@ namespace jdb.Utils
 
             if (nextKey != ConsoleKey.Escape) return;
 
+            Console.WriteLine();
             WriteLineInColor("Good day!", ConsoleColor.DarkBlue);
             Environment.Exit(0);
         }
