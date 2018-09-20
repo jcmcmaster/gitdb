@@ -55,7 +55,7 @@ namespace gitdb
 
             Settings = SettingsUtils.InitSettings();
 
-            if (Settings["server_" + Environment.CurrentDirectory] == null)
+            if (Settings["server_" + Environment.CurrentDirectory] == null || args.Contains("-o"))
             {
                 ServerChoice =
                     new Server(CliUtils.GetUserSelection<string>("Select a server:", DbUtils.GetSqlServers()));
@@ -69,7 +69,7 @@ namespace gitdb
 
             Console.WriteLine("SELECTED SERVER: " + ServerChoice.Name);
 
-            if (Settings["db_" + Environment.CurrentDirectory] == null)
+            if (Settings["db_" + Environment.CurrentDirectory] == null || args.Contains("-o"))
             {
                 DbChoice = ServerChoice.Databases[CliUtils.GetUserSelection<string>("Select a database:",
                     ServerChoice.Databases.Cast<Database>().Where(x => x.IsSystemObject == false)
