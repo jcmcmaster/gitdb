@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace gitdb.Models
+namespace jdb.Models
 {
     public class DbObject
     {

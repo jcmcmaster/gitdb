@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace gitdb.Utils
+namespace jdb.Utils
 {
     public static class CliUtils
     {

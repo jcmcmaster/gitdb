@@ -1,5 +1,4 @@
-﻿using gitdb.Utils;
-using Microsoft.SqlServer.Management.Smo;
+﻿using Microsoft.SqlServer.Management.Smo;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -12,10 +11,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using gitdb.Models;
+using jdb.Models;
+using jdb.Utils;
 using View = Microsoft.SqlServer.Management.Smo.View;
 
-namespace gitdb
+namespace jdb
 {
     internal class Program
     {
@@ -56,7 +56,7 @@ namespace gitdb
         {            
             Console.WriteLine();
             
-            CliUtils.WriteLineInColor("Welcome to gitdb v0.3", ConsoleColor.Cyan);            
+            CliUtils.WriteLineInColor("Welcome to jdb v0.3", ConsoleColor.Cyan);            
 
             Settings = SettingsUtils.InitSettings();
 
@@ -66,7 +66,7 @@ namespace gitdb
                     new Server(CliUtils.GetUserSelection<string>("Select a server:", DbUtils.GetSqlServers()));
 
                 Settings["server_" + Environment.CurrentDirectory] = ServerChoice.Name;
-                Console.WriteLine("SERVER CHOICE SAVED. USE 'gitdb -o' TO OVERRIDE SAVED SETTINGS.");
+                Console.WriteLine("SERVER CHOICE SAVED. USE 'jdb -o' TO OVERRIDE SAVED SETTINGS.");
             }
             else
             {
@@ -83,7 +83,7 @@ namespace gitdb
                         .Select(x => x.Name).ToList())];
 
                 Settings["db_" + Environment.CurrentDirectory] = DbChoice.Name;
-                Console.WriteLine("DB CHOICE SAVED. USE 'gitdb -o' TO OVERRIDE SAVED SETTINGS.");
+                Console.WriteLine("DB CHOICE SAVED. USE 'jdb -o' TO OVERRIDE SAVED SETTINGS.");
             }
             else
             {

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2005
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gitdb", "gitdb\gitdb.csproj", "{4086FDCF-9C6A-4133-95E1-A4B6B047BF6D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "jdb", "jdb\jdb.csproj", "{4086FDCF-9C6A-4133-95E1-A4B6B047BF6D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
