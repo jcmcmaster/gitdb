@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -11,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using gitdb.Models;
 using View = Microsoft.SqlServer.Management.Smo.View;
 
 namespace gitdb
@@ -21,6 +23,7 @@ namespace gitdb
         public static Database DbChoice { get; set; }
         public static Schema SchemaChoice { get; set; }
         public static string ObjectChoice { get; set; }
+        public static DbObject DbObjectModel { get; set; }
         public static string ObjectScript { get; set; }
 
         public static dynamic Settings { get; set; }
@@ -84,20 +87,8 @@ namespace gitdb
             }
 
             Console.WriteLine("SELECTED DATABASE: " + DbChoice.Name);
-                
-            SchemaChoice = DbChoice.Schemas[CliUtils.GetUserSelection<string>("Select a schema:", 
-                DbChoice.Schemas.Cast<Schema>().Where(x => x.IsSystemObject == false || x.Name.Contains("dbo"))
-                    .Select(x => x.Name).ToList())];
-
-            SettingsUtils.WriteSettings(Settings);
-
-            TableCollection tables = DbChoice.Tables;
-            StoredProcedureCollection procs = DbChoice.StoredProcedures;
-            UserDefinedFunctionCollection funcs = DbChoice.UserDefinedFunctions;
-            ViewCollection views = DbChoice.Views;
 
             bool found = false;
-            ObjectScript = string.Empty;
 
             while (!found)
             {
@@ -105,65 +96,89 @@ namespace gitdb
 
                 Console.WriteLine("Working...");
 
-                StringCollection scriptParts;
-                if (tables.Contains(ObjectChoice, SchemaChoice.Name))
-                {
-                    found = true;
-                    Table specifiedTable = tables[ObjectChoice, SchemaChoice.Name];
-                    scriptParts = specifiedTable.Script(ScriptOptions);
+                string[] objectChoiceParts = ObjectChoice.Split('.');
 
-                    foreach (string s in scriptParts)
-                    {
-                        ObjectScript += s + Environment.NewLine;
-                    }
+                SchemaChoice = DbChoice.Schemas[objectChoiceParts[0]];
+                ObjectChoice = objectChoiceParts[1];
 
-                    Directory.CreateDirectory(TableDir);
-                    File.WriteAllText(Environment.CurrentDirectory + "/Tables/" + SchemaChoice.Name + "." + specifiedTable.Name + ".sql", ObjectScript);
-                }
-                else if (procs.Contains(ObjectChoice, SchemaChoice.Name))
-                {
+                SettingsUtils.WriteSettings(Settings);
+
+                DbObjectModel = DbUtils.GetDbObject(ServerChoice.Name, DbChoice.Name, SchemaChoice.Name, ObjectChoice);
+
+                if (DbObjectModel != null)
                     found = true;
+                else
+                    Console.WriteLine("Object " + ObjectChoice + " not found in database.");
+            }
+
+            var scriptParts = new StringCollection();
+            ObjectScript = string.Empty;
+            string subDir = "", objName = "";
+            switch (DbObjectModel.ObjectType)
+            {
+                case "CLR_STORED_PROCEDURE":
+                case "SQL_STORED_PROCEDURE":
+                case "EXTENDED_STORED_PROCEDURE":
+                    StoredProcedureCollection procs = DbChoice.StoredProcedures;
                     StoredProcedure specifiedProc = procs[ObjectChoice, SchemaChoice.Name];
                     scriptParts = specifiedProc.Script(ScriptOptions);
-
-                    foreach (string s in scriptParts)
-                    {
-                        ObjectScript += s + Environment.NewLine;
-                    }
-
-                    File.WriteAllText(Environment.CurrentDirectory + "/Procedures/" + SchemaChoice.Name + "." + specifiedProc.Name + ".sql", ObjectScript);
-                }
-                else if (funcs.Contains(ObjectChoice, SchemaChoice.Name))
-                {
-                    found = true;
+                    subDir = "Procedures";
+                    objName = specifiedProc.Name;
+                    Directory.CreateDirectory(ProcedureDir);
+                    break;
+                case "TYPE_TABLE":
+                case "INTERNAL_TABLE":
+                case "SYSTEM_TABLE":
+                case "AGGREGATE_FUNCTION":
+                case "USER_TABLE":
+                    TableCollection tables = DbChoice.Tables;
+                    Table specifiedTable = tables[ObjectChoice, SchemaChoice.Name];
+                    scriptParts = specifiedTable.Script(ScriptOptions);
+                    subDir = "Tables";
+                    objName = specifiedTable.Name;
+                    Directory.CreateDirectory(TableDir);
+                    break;
+                case "CLR_SCALAR_FUNCTION":
+                case "SQL_TABLE_VALUED_FUNCTION":
+                case "SQL_SCALAR_FUNCTION":
+                case "SQL_INLINE_TABLE_VALUED_FUNCTION":
+                    UserDefinedFunctionCollection funcs = DbChoice.UserDefinedFunctions;
                     UserDefinedFunction specifiedFunc = funcs[ObjectChoice, SchemaChoice.Name];
                     scriptParts = specifiedFunc.Script(ScriptOptions);
-
-                    foreach (string s in scriptParts)
-                    {
-                        ObjectScript += s + Environment.NewLine;
-                    }
-
-                    File.WriteAllText(Environment.CurrentDirectory + "/Functions/" + SchemaChoice.Name + "." + specifiedFunc.Name + ".sql", ObjectScript);
-                }
-                else if (views.Contains(ObjectChoice, SchemaChoice.Name))
-                {
-                    found = true;
+                    subDir = "Functions";
+                    objName = specifiedFunc.Name;
+                    Directory.CreateDirectory(FunctionDir);
+                    break;
+                case "SQL_TRIGGER":
+                    break;
+                case "VIEW":
+                    ViewCollection views = DbChoice.Views;
                     View specifiedView = views[ObjectChoice, SchemaChoice.Name];
                     scriptParts = specifiedView.Script(ScriptOptions);
-
-                    foreach (string s in scriptParts)
-                    {
-                        ObjectScript += s + Environment.NewLine;
-                    }
-
-                    File.WriteAllText(Environment.CurrentDirectory + "/Views/" + SchemaChoice.Name + "." + specifiedView.Name + ".sql", ObjectScript);
-                }
-                else
-                {
-                    Console.WriteLine("Object " + ObjectChoice + " not found in database.");
-                }
+                    subDir = "Views";
+                    objName = specifiedView.Name;
+                    Directory.CreateDirectory(ViewDir);
+                    break;
+                case "SYNONYM":
+                    break;
+                case "SERVICE_QUEUE":
+                    break;
+                case "SEQUENCE_OBJECT":
+                    break;
+                case "DEFAULT_CONSTRAINT":
+                case "FOREIGN_KEY_CONSTRAINT":
+                case "PRIMARY_KEY_CONSTRAINT":
+                case "UNIQUE_CONSTRAINT":
+                    break;
+                default: throw new Exception("Unsupported type!");
             }
+
+            foreach (string s in scriptParts)
+            {
+                ObjectScript += s + Environment.NewLine;
+            }
+
+            File.WriteAllText(Environment.CurrentDirectory + "/" + subDir + "/" + SchemaChoice.Name + "." + objName + ".sql", ObjectScript);
 
             Application.Exit();
         }

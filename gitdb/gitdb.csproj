@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\DbObject.cs" />
     <Compile Include="Utils\CliUtils.cs" />
     <Compile Include="Utils\DBUtils.cs" />
     <Compile Include="Program.cs" />

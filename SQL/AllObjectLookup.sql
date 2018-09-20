@@ -10,4 +10,4 @@ SELECT ao.[name] ObjectName
 FROM sys.all_objects ao
 LEFT JOIN sys.schemas s
   ON s.schema_id = ao.schema_id
-WHERE ao.[name] = @objectName
+WHERE s.[name] + '.' ao.[name] = @objectName
