@@ -55,7 +55,7 @@ namespace gitdb
         private static void Main(string[] args)
         {
             Console.WriteLine();
-            Console.WriteLine("Welcome to gitdb v0.3");            
+            CliUtils.WriteLineInColor("Welcome to gitdb v0.3", ConsoleColor.Cyan);            
 
             Settings = SettingsUtils.InitSettings();
 
@@ -71,8 +71,9 @@ namespace gitdb
             {
                 ServerChoice = new Server(Settings["server_" + Environment.CurrentDirectory].ToString());                
             }
-
-            Console.WriteLine("SELECTED SERVER: " + ServerChoice.Name);
+            
+            CliUtils.WriteInColor("SELECTED SERVER: ", ConsoleColor.DarkCyan);
+            Console.WriteLine(ServerChoice.Name);
 
             if (Settings["db_" + Environment.CurrentDirectory] == null || args.Has("-o"))
             {
@@ -88,7 +89,8 @@ namespace gitdb
                 DbChoice = (Database)ServerChoice.Databases[Settings["db_" + Environment.CurrentDirectory].ToString()];
             }
 
-            Console.WriteLine("SELECTED DATABASE: " + DbChoice.Name);
+            CliUtils.WriteInColor("SELECTED DATABASE: ", ConsoleColor.DarkCyan);
+            Console.WriteLine(DbChoice.Name);
 
             while (true)
             {

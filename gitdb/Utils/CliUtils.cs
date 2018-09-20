@@ -53,5 +53,27 @@ namespace gitdb.Utils
 
             return Console.ReadLine();
         }
+
+        public static void WriteLineInColor(string message, ConsoleColor foregroundColor)
+        {
+            ConsoleColor curForegroundColor = Console.ForegroundColor;
+
+            Console.ForegroundColor = foregroundColor;
+
+            Console.WriteLine(message);
+
+            Console.ForegroundColor = curForegroundColor;
+        }
+
+        public static void WriteInColor(string message, ConsoleColor foregroundColor)
+        {
+            ConsoleColor curForegroundColor = Console.ForegroundColor;
+
+            Console.ForegroundColor = foregroundColor;
+
+            Console.Write(message);
+
+            Console.ForegroundColor = curForegroundColor;
+        }
     }
 }
