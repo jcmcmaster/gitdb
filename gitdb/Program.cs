@@ -23,6 +23,19 @@ namespace gitdb
         public static string ObjectChoice { get; set; }
         public static string ObjectScript { get; set; }
 
+        public static dynamic Settings { get; set; }
+
+        public const string AssemblyDir = "Assemblies";
+        public const string CredentialDir = "Credentials";
+        public const string CustomScriptDir = "CustomScripts";
+        public const string FunctionDir = "Functions";
+        public const string ProcedureDir = "Procedures";
+        public const string SchemaDir = "Schemas";
+        public const string SequenceDir = "Sequences";
+        public const string TableDir = "Tables";
+        public const string TriggerDir = "Triggers";
+        public const string ViewDir = "Views";
+
         public static ScriptingOptions ScriptOptions = new ScriptingOptions
         {
             AnsiPadding = true,
@@ -38,17 +51,45 @@ namespace gitdb
         private static void Main(string[] args)
         {
             Console.WriteLine();
-            Console.WriteLine("Welcome to gitdb BETA v0.2");
+            Console.WriteLine("Welcome to gitdb BETA v0.3");
 
-            ServerChoice = new Server(CliUtils.GetUserSelection<string>("Select a server:", DbUtils.GetSqlServers()));
+            Settings = SettingsUtils.InitSettings();
 
-            DbChoice = ServerChoice.Databases[CliUtils.GetUserSelection<string>("Select a database:",
-                ServerChoice.Databases.Cast<Database>().Where(x => x.IsSystemObject == false)
-                    .Select(x => x.Name).ToList())];
+            if (Settings["server_" + Environment.CurrentDirectory] == null)
+            {
+                ServerChoice =
+                    new Server(CliUtils.GetUserSelection<string>("Select a server:", DbUtils.GetSqlServers()));
 
+                Settings["server_" + Environment.CurrentDirectory] = ServerChoice.Name;
+            }
+            else
+            {
+                ServerChoice = new Server(Settings["server_" + Environment.CurrentDirectory].ToString());
+            }
+
+            Console.WriteLine("SELECTED SERVER: " + ServerChoice.Name);
+
+            if (Settings["db_" + Environment.CurrentDirectory] == null)
+            {
+                DbChoice = ServerChoice.Databases[CliUtils.GetUserSelection<string>("Select a database:",
+                    ServerChoice.Databases.Cast<Database>().Where(x => x.IsSystemObject == false)
+                        .Select(x => x.Name).ToList())];
+
+                Settings["db_" + Environment.CurrentDirectory] = DbChoice.Name;
+
+            }
+            else
+            {
+                DbChoice = (Database) ServerChoice.Databases[Settings["db_" + Environment.CurrentDirectory].ToString()];
+            }
+
+            Console.WriteLine("SELECTED DATABASE: " + DbChoice.Name);
+                
             SchemaChoice = DbChoice.Schemas[CliUtils.GetUserSelection<string>("Select a schema:", 
                 DbChoice.Schemas.Cast<Schema>().Where(x => x.IsSystemObject == false || x.Name.Contains("dbo"))
                     .Select(x => x.Name).ToList())];
+
+            SettingsUtils.WriteSettings(Settings);
 
             TableCollection tables = DbChoice.Tables;
             StoredProcedureCollection procs = DbChoice.StoredProcedures;
@@ -76,6 +117,7 @@ namespace gitdb
                         ObjectScript += s + Environment.NewLine;
                     }
 
+                    Directory.CreateDirectory(TableDir);
                     File.WriteAllText(Environment.CurrentDirectory + "/Tables/" + SchemaChoice.Name + "." + specifiedTable.Name + ".sql", ObjectScript);
                 }
                 else if (procs.Contains(ObjectChoice, SchemaChoice.Name))
