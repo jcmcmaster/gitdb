@@ -56,7 +56,7 @@ namespace jdb
         {            
             Console.WriteLine();
             
-            CliUtils.WriteLineInColor("Welcome to jdb v0.3", ConsoleColor.Cyan);            
+            CliUtils.WriteLineInColor("Welcome to jdb v0.4", ConsoleColor.Cyan);            
 
             Settings = SettingsUtils.InitSettings();
 
@@ -118,7 +118,7 @@ namespace jdb
                         SchemaChoice = DbChoice.Schemas[objectChoiceParts[0]];
                     else
                     {
-                        CliUtils.WriteLineInColor("\tSCHEMA '" + objectChoiceParts[0] + "' NOT FOUND IN " + DbChoice.Name, ConsoleColor.Red);
+                        CliUtils.WriteLineInColor("\tSchema '" + objectChoiceParts[0] + "' not found in " + DbChoice.Name, ConsoleColor.Red);
                         continue;
                     }
 
@@ -132,7 +132,7 @@ namespace jdb
                     if (DbObjectModel != null)
                         found = true;
                     else
-                        CliUtils.WriteLineInColor("\tOBJECT '" + ObjectChoice + "' NOT FOUND IN " + DbChoice.Name + "." + SchemaChoice.Name, ConsoleColor.Red);
+                        CliUtils.WriteLineInColor("\tObject '" + ObjectChoice + "' not found in " + DbChoice.Name + "." + SchemaChoice.Name, ConsoleColor.Red);
                 }
 
                 ObjectScript = string.Empty;
@@ -227,7 +227,7 @@ namespace jdb
                         throw new NotImplementedException("Unsupported object type: " + DbObjectModel.ObjectType);
                 }
 
-                CliUtils.WriteLineInColor(subDir.Substring(0, subDir.Length - 1) + " \"" + ObjectChoice +
+                CliUtils.WriteLineInColor("\t" + subDir.Substring(0, subDir.Length - 1) + " \"" + ObjectChoice +
                                   "\" successfully scripted to " + filePath, ConsoleColor.Green);
 
                 CliUtils.PressEscapeToQuit();

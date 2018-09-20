@@ -15,3 +15,4 @@ C:\Projects\jdb\jdb\obj\Debug\jdb.csproj.CoreCompileInputs.cache
 C:\Projects\jdb\jdb\obj\Debug\jdb.csproj.CopyComplete
 C:\Projects\jdb\jdb\obj\Debug\jdb.exe
 C:\Projects\jdb\jdb\obj\Debug\jdb.pdb
+C:\Projects\jdb\jdb\obj\Debug\jdb.csprojAssemblyReference.cache
