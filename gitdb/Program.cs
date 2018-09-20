@@ -47,14 +47,15 @@ namespace gitdb
             ScriptBatchTerminator = true,
             DriAll = true,
             FullTextIndexes = true,
-            IncludeDatabaseContext = false
+            IncludeDatabaseContext = false,
+            NoCommandTerminator = false
         };
 
         [STAThread]
         private static void Main(string[] args)
         {
             Console.WriteLine();
-            Console.WriteLine("Welcome to gitdb BETA v0.3");
+            Console.WriteLine("Welcome to gitdb v0.3");
 
             Settings = SettingsUtils.InitSettings();
 
@@ -64,10 +65,11 @@ namespace gitdb
                     new Server(CliUtils.GetUserSelection<string>("Select a server:", DbUtils.GetSqlServers()));
 
                 Settings["server_" + Environment.CurrentDirectory] = ServerChoice.Name;
+                Console.WriteLine("SERVER CHOICE SAVED. USE 'gitdb -o' TO OVERRIDE SAVED SETTINGS.");
             }
             else
             {
-                ServerChoice = new Server(Settings["server_" + Environment.CurrentDirectory].ToString());
+                ServerChoice = new Server(Settings["server_" + Environment.CurrentDirectory].ToString());                
             }
 
             Console.WriteLine("SELECTED SERVER: " + ServerChoice.Name);
@@ -79,11 +81,11 @@ namespace gitdb
                         .Select(x => x.Name).ToList())];
 
                 Settings["db_" + Environment.CurrentDirectory] = DbChoice.Name;
-
+                Console.WriteLine("DB CHOICE SAVED. USE 'gitdb -o' TO OVERRIDE SAVED SETTINGS.");
             }
             else
             {
-                DbChoice = (Database) ServerChoice.Databases[Settings["db_" + Environment.CurrentDirectory].ToString()];
+                DbChoice = (Database)ServerChoice.Databases[Settings["db_" + Environment.CurrentDirectory].ToString()];
             }
 
             Console.WriteLine("SELECTED DATABASE: " + DbChoice.Name);
@@ -93,6 +95,12 @@ namespace gitdb
             while (!found)
             {
                 ObjectChoice = CliUtils.GetUserInput("Specify a database object in the current directory:");
+
+                if (!ObjectChoice.Contains('.'))
+                {
+                    Console.WriteLine("You must qualify your object with a schema.");
+                    continue;
+                }
 
                 Console.WriteLine("Working...");
 
@@ -111,7 +119,7 @@ namespace gitdb
                     Console.WriteLine("Object " + ObjectChoice + " not found in database.");
             }
 
-            var scriptParts = new StringCollection();
+            StringCollection scriptParts;
             ObjectScript = string.Empty;
             string subDir = "", objName = "";
             switch (DbObjectModel.ObjectType)
@@ -150,6 +158,7 @@ namespace gitdb
                     Directory.CreateDirectory(FunctionDir);
                     break;
                 case "SQL_TRIGGER":
+                    throw new NotImplementedException();
                     break;
                 case "VIEW":
                     ViewCollection views = DbChoice.Views;
@@ -160,25 +169,33 @@ namespace gitdb
                     Directory.CreateDirectory(ViewDir);
                     break;
                 case "SYNONYM":
+                    throw new NotImplementedException();
                     break;
                 case "SERVICE_QUEUE":
+                    throw new NotImplementedException();
                     break;
                 case "SEQUENCE_OBJECT":
+                    throw new NotImplementedException();
                     break;
                 case "DEFAULT_CONSTRAINT":
                 case "FOREIGN_KEY_CONSTRAINT":
                 case "PRIMARY_KEY_CONSTRAINT":
                 case "UNIQUE_CONSTRAINT":
+                    throw new NotImplementedException();
                     break;
-                default: throw new Exception("Unsupported type!");
+                default: throw new NotImplementedException("Unsupported type!");
             }
 
             foreach (string s in scriptParts)
             {
-                ObjectScript += s + Environment.NewLine;
+                ObjectScript += s + Environment.NewLine + "GO" + Environment.NewLine;
             }
 
-            File.WriteAllText(Environment.CurrentDirectory + "/" + subDir + "/" + SchemaChoice.Name + "." + objName + ".sql", ObjectScript);
+            string filePath = Environment.CurrentDirectory + "\\" + subDir + "\\" + SchemaChoice.Name + "." + objName + ".sql";
+
+            File.WriteAllText(filePath, ObjectScript);
+
+            Console.WriteLine(subDir.Substring(0, subDir.Length - 1) + " \"" + ObjectChoice + "\" successfully scripted to " + filePath);
 
             Application.Exit();
         }

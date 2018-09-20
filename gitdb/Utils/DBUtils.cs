@@ -36,6 +36,7 @@ namespace gitdb.Utils
         public static SqlCommand GetCommand(string serverName, string dataBaseName)
         {
             var conn = new SqlConnection("Data Source=" + serverName + "; Initial Catalog=" + dataBaseName + "; Integrated Security=true;");
+            conn.Open();
             return new SqlCommand(string.Empty, conn);
         }
 

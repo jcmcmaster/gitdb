@@ -12,7 +12,7 @@ namespace gitdb.Utils
         {
             Console.WriteLine(Environment.NewLine);
 
-            Console.WriteLine("Press ESC to quit.");
+            Console.WriteLine("Press ESC to quit or any key to continue.");
 
             ConsoleKey nextKey = Console.ReadKey(true).Key;
             if (nextKey == ConsoleKey.Escape)
@@ -39,9 +39,7 @@ namespace gitdb.Utils
                 Console.WriteLine(i + ": " + options[i]);
             }
 
-            int selectionIndex = Convert.ToInt32(Console.ReadLine());
-
-            Console.WriteLine(options[selectionIndex] + " selected.");
+            int selectionIndex = Convert.ToInt32(Console.ReadLine());            
 
             return (T)options[selectionIndex];
         }

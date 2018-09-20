@@ -23,29 +23,21 @@ namespace gitdb.Utils
             return GetSettings();
         }
 
-        public static dynamic GetSettings()
-        {
-            string json = File.ReadAllText(SettingsLocation);
-            return JsonConvert.DeserializeObject(json);
-        }
-
-        public static bool SettingExists(dynamic settings, string name)
-        {
-            if (settings is ExpandoObject)
-                return ((IDictionary<string, object>)settings).ContainsKey(name);
-
-            return settings.GetType().GetProperty(name) != null;
-        }
-
-        public static void InitSettingsFile()
-        {
-            File.WriteAllText(SettingsLocation, "{}");
-        }
-
         public static void WriteSettings(dynamic jsonObj)
         {
             string output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
             File.WriteAllText(SettingsLocation, output);
+        }
+
+        private static void InitSettingsFile()
+        {
+            File.WriteAllText(SettingsLocation, "{}");
+        }
+
+        private static dynamic GetSettings()
+        {
+            string json = File.ReadAllText(SettingsLocation);
+            return JsonConvert.DeserializeObject(json);
         }
     }
 }
