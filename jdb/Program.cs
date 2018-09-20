@@ -51,38 +51,8 @@ namespace jdb
 
             Settings = SettingsUtils.InitSettings();
 
-            if (Settings["server_" + Environment.CurrentDirectory] == null || args.Has("-o"))
-            {
-                ServerChoice =
-                    new Server(CliUtils.GetUserSelection<string>("Select a server:", DbUtils.GetSqlServers()));
-
-                Settings["server_" + Environment.CurrentDirectory] = ServerChoice.Name;
-                Console.WriteLine("SERVER CHOICE SAVED. USE 'jdb -o' TO OVERRIDE SAVED SETTINGS.");
-            }
-            else
-            {
-                ServerChoice = new Server(Settings["server_" + Environment.CurrentDirectory].ToString());                
-            }
-            
-            CliUtils.WriteInColor("SELECTED SERVER: ", ConsoleColor.DarkCyan);
-            Console.WriteLine(ServerChoice.Name);
-
-            if (Settings["db_" + Environment.CurrentDirectory] == null || args.Has("-o"))
-            {
-                DbChoice = ServerChoice.Databases[CliUtils.GetUserSelection<string>("Select a database:",
-                    ServerChoice.Databases.Cast<Database>().Where(x => x.IsSystemObject == false)
-                        .Select(x => x.Name).ToList())];
-
-                Settings["db_" + Environment.CurrentDirectory] = DbChoice.Name;
-                Console.WriteLine("DB CHOICE SAVED. USE 'jdb -o' TO OVERRIDE SAVED SETTINGS.");
-            }
-            else
-            {
-                DbChoice = (Database)ServerChoice.Databases[Settings["db_" + Environment.CurrentDirectory].ToString()];
-            }
-
-            CliUtils.WriteInColor("SELECTED DATABASE: ", ConsoleColor.DarkCyan);
-            Console.WriteLine(DbChoice.Name);
+            SetServer(args);
+            SetDb(args);
 
             while (true)
             {
@@ -135,7 +105,7 @@ namespace jdb
                 ObjectScript = string.Empty;
                 string subDir = "", objName = "", filePath = "";
 
-                switch (DbObjectModel.ObjectType)
+                switch (DbObjectModel.ObjectType.Trim().ToUpper())
                 {
                     case "CLR_STORED_PROCEDURE":
                     case "SQL_STORED_PROCEDURE":
@@ -191,7 +161,6 @@ namespace jdb
 
                         specifiedFunc.Script(ScriptOptions);
                         break;
-
                     case "VIEW":
                         ViewCollection views = DbChoice.Views;
                         View specifiedView = views[ObjectChoice, SchemaChoice.Name];
@@ -229,6 +198,45 @@ namespace jdb
 
                 CliUtils.PressEscapeToQuit();
             }
+        }
+
+        private static void SetDb(string[] args)
+        {
+            if (Settings["db_" + Environment.CurrentDirectory] == null || args.Has("-o"))
+            {
+                DbChoice = ServerChoice.Databases[CliUtils.GetUserSelection<string>("Select a database:",
+                    ServerChoice.Databases.Cast<Database>().Where(x => x.IsSystemObject == false)
+                        .Select(x => x.Name).ToList())];
+
+                Settings["db_" + Environment.CurrentDirectory] = DbChoice.Name;
+                Console.WriteLine("DB choice saved. Use 'jdb -o' to override saved settings.");
+            }
+            else
+            {
+                DbChoice = (Database)ServerChoice.Databases[Settings["db_" + Environment.CurrentDirectory].ToString()];
+            }
+
+            CliUtils.WriteInColor("SELECTED DATABASE: ", ConsoleColor.DarkCyan);
+            Console.WriteLine(DbChoice.Name);
+        }
+
+        protected static void SetServer(string[] args)
+        {
+            if (Settings["server_" + Environment.CurrentDirectory] == null || args.Has("-o"))
+            {
+                ServerChoice =
+                    new Server(CliUtils.GetUserSelection<string>("Select a server:", DbUtils.GetSqlServers()));
+
+                Settings["server_" + Environment.CurrentDirectory] = ServerChoice.Name;
+                Console.WriteLine("Server choice saved. Use 'jdb -o' to override saved settings.");
+            }
+            else
+            {
+                ServerChoice = new Server(Settings["server_" + Environment.CurrentDirectory].ToString());
+            }
+
+            CliUtils.WriteInColor("SELECTED SERVER: ", ConsoleColor.DarkCyan);
+            Console.WriteLine(ServerChoice.Name);
         }
     }
 }

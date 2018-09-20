@@ -44,7 +44,7 @@ namespace jdb.Utils
         }
 
         /// <summary>
-        /// Overwrites the settings file with an empty JSON object.
+        /// Overwrites the settings file with an empty JSON object, creating it if it doesn't exist.
         /// </summary>
         private static void InitSettingsFile()
         {
