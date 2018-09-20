@@ -231,7 +231,8 @@ namespace jdb
                     case "UNIQUE_CONSTRAINT":
 
                     default:
-                        throw new NotImplementedException("Unsupported object type: " + DbObjectModel.ObjectType);
+                        CliUtils.WriteLineInColor("\tUnsupported object type: " + DbObjectModel.ObjectType, ConsoleColor.Red);
+                        break;
                 }
 
                 CliUtils.WriteLineInColor("\t" + subDir.Substring(0, subDir.Length - 1) + " \"" + ObjectChoice +
