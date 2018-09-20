@@ -11,28 +11,41 @@ using Microsoft.Win32;
 
 namespace jdb.Utils
 {
+    /// <summary>
+    /// Database utilities.
+    /// </summary>
     public static class DbUtils
     {
+        /// <summary>
+        /// Looks for SQL Server instances running on the machine and returns a list of their names.
+        /// </summary>
+        /// <returns></returns>
         public static List<string> GetSqlServers()
         {
-            List<string> result = new List<string>();
+            var result = new List<string>();
 
             RegistryView registryView = Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32;
             using (RegistryKey hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, registryView))
             {
                 RegistryKey instanceKey = hklm.OpenSubKey(@"SOFTWARE\Microsoft\Microsoft SQL Server\Instance Names\SQL", false);
-                if (instanceKey != null)
-                {
-                    foreach (string instanceName in instanceKey.GetValueNames())
-                    {
-                        result.Add((Environment.MachineName + @"\" + instanceName).Replace("\\MSSQLSERVER", ""));
-                    }
-                }
+
+                if (instanceKey == null) return result;
+
+                result
+                    .AddRange(instanceKey.GetValueNames()
+                    .Select(instanceName => (Environment.MachineName + @"\" + instanceName)
+                            .Replace("\\MSSQLSERVER", "")));
             }
 
             return result;
         }
 
+        /// <summary>
+        /// Gets a SQL command with an open connection to the chosen server and database.
+        /// </summary>
+        /// <param name="serverName"></param>
+        /// <param name="dataBaseName"></param>
+        /// <returns></returns>
         public static SqlCommand GetCommand(string serverName, string dataBaseName)
         {
             var conn = new SqlConnection("Data Source=" + serverName + "; Initial Catalog=" + dataBaseName + "; Integrated Security=true;");
@@ -40,6 +53,14 @@ namespace jdb.Utils
             return new SqlCommand(string.Empty, conn);
         }
 
+        /// <summary>
+        /// Gets a DbObject representation of the given selection.
+        /// </summary>
+        /// <param name="serverChoice"></param>
+        /// <param name="dbChoice"></param>
+        /// <param name="schemaChoice"></param>
+        /// <param name="objectChoice"></param>
+        /// <returns></returns>
         public static DbObject GetDbObject(string serverChoice, string dbChoice, string schemaChoice, string objectChoice)
         {
             using (SqlCommand cmd = GetCommand(serverChoice, dbChoice))

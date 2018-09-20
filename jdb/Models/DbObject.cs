@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace jdb.Models
 {
+    /// <summary>
+    /// Core information of a database object.
+    /// </summary>
     public class DbObject
     {
         public string ObjectName { get; set; }

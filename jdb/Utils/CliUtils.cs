@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace jdb.Utils
 {
+    /// <summary>
+    /// Command line utilities.
+    /// </summary>
     public static class CliUtils
     {
+        /// <summary>
+        /// Prompts the user to press the Escape key to exit the app, and if they do says goodbye.
+        /// </summary>
         public static void PressEscapeToQuit()
         {
             Console.WriteLine();
@@ -58,6 +64,11 @@ namespace jdb.Utils
             return Console.ReadLine();
         }
 
+        /// <summary>
+        /// Writes a line in color and then switches back to the previous line color.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="foregroundColor"></param>
         public static void WriteLineInColor(string message, ConsoleColor foregroundColor)
         {
             ConsoleColor curForegroundColor = Console.ForegroundColor;
@@ -69,6 +80,11 @@ namespace jdb.Utils
             Console.ForegroundColor = curForegroundColor;
         }
 
+        /// <summary>
+        /// Writes text in color and then switches back to the previous line color.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="foregroundColor"></param>
         public static void WriteInColor(string message, ConsoleColor foregroundColor)
         {
             ConsoleColor curForegroundColor = Console.ForegroundColor;
