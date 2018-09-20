@@ -26,6 +26,7 @@ namespace jdb
         public const string ProcedureDir = "Procedures";
         public const string SchemaDir = "Schemas";
         public const string SequenceDir = "Sequences";
+        public const string SynonymDir = "Synonyms";
         public const string TableDir = "Tables";
         public const string TriggerDir = "Triggers";
         public const string ViewDir = "Views";
@@ -176,14 +177,54 @@ namespace jdb
 
                         specifiedView.Script(ScriptOptions);
                         break;
+                    case "SEQUENCE_OBJECT":
+                        SequenceCollection sequences = DbChoice.Sequences;
+                        Sequence specifiedSequence = sequences[ObjectChoice, SchemaChoice.Name];
+
+                        subDir = SequenceDir;
+
+                        Directory.CreateDirectory(subDir);
+
+                        objName = specifiedSequence.Name;
+                        filePath = Environment.CurrentDirectory + "\\" + subDir + "\\" + SchemaChoice.Name + "." +
+                                   objName + ".sql";
+                        ScriptOptions.FileName = filePath;
+
+                        specifiedSequence.Script(ScriptOptions);
+                        break;
                     case "SQL_TRIGGER":
+                        DatabaseDdlTriggerCollection triggers = DbChoice.Triggers;
+                        DatabaseDdlTrigger specifiedTrigger = triggers[ObjectChoice];
 
+                        subDir = TriggerDir;
+
+                        Directory.CreateDirectory(subDir);
+
+                        objName = specifiedTrigger.Name;
+                        filePath = Environment.CurrentDirectory + "\\" + subDir + "\\" + SchemaChoice.Name + "." +
+                                   objName + ".sql";
+                        ScriptOptions.FileName = filePath;
+
+                        specifiedTrigger.Script(ScriptOptions);
+                        break;
                     case "SYNONYM":
+                        SynonymCollection synonyms = DbChoice.Synonyms;
+                        Synonym specifiedSynonym = synonyms[ObjectChoice];
 
+                        subDir = SynonymDir;
+
+                        Directory.CreateDirectory(subDir);
+
+                        objName = specifiedSynonym.Name;
+                        filePath = Environment.CurrentDirectory + "\\" + subDir + "\\" + SchemaChoice.Name + "." +
+                                   objName + ".sql";
+                        ScriptOptions.FileName = filePath;
+
+                        specifiedSynonym.Script(ScriptOptions);
+                        break;
                     case "SERVICE_QUEUE":
 
-                    case "SEQUENCE_OBJECT":
-
+                    
                     case "DEFAULT_CONSTRAINT":
                     case "FOREIGN_KEY_CONSTRAINT":
                     case "PRIMARY_KEY_CONSTRAINT":
