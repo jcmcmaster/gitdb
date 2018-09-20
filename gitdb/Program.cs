@@ -53,8 +53,9 @@ namespace gitdb
 
         [STAThread]
         private static void Main(string[] args)
-        {
+        {            
             Console.WriteLine();
+            
             CliUtils.WriteLineInColor("Welcome to gitdb v0.3", ConsoleColor.Cyan);            
 
             Settings = SettingsUtils.InitSettings();
@@ -103,15 +104,24 @@ namespace gitdb
 
                     if (!ObjectChoice.Contains('.'))
                     {
-                        Console.WriteLine("You must qualify your object with a schema.");
+                        CliUtils.WriteLineInColor("You must qualify your object with a schema.", ConsoleColor.Red);
                         continue;
                     }
 
-                    Console.WriteLine("Working...");
+                    Console.WriteLine();
+                    CliUtils.WriteLineInColor("Working...", ConsoleColor.DarkBlue);
+                    Console.WriteLine();
 
                     string[] objectChoiceParts = ObjectChoice.Split('.');
 
-                    SchemaChoice = DbChoice.Schemas[objectChoiceParts[0]];
+                    if (DbChoice.Schemas[objectChoiceParts[0]] != null)
+                        SchemaChoice = DbChoice.Schemas[objectChoiceParts[0]];
+                    else
+                    {
+                        CliUtils.WriteLineInColor("\tSCHEMA '" + objectChoiceParts[0] + "' NOT FOUND IN " + DbChoice.Name, ConsoleColor.Red);
+                        continue;
+                    }
+
                     ObjectChoice = objectChoiceParts[1];
 
                     SettingsUtils.WriteSettings(Settings);
@@ -122,7 +132,7 @@ namespace gitdb
                     if (DbObjectModel != null)
                         found = true;
                     else
-                        Console.WriteLine("Object " + ObjectChoice + " not found in database.");
+                        CliUtils.WriteLineInColor("\tOBJECT '" + ObjectChoice + "' NOT FOUND IN " + DbChoice.Name + "." + SchemaChoice.Name, ConsoleColor.Red);
                 }
 
                 ObjectScript = string.Empty;
@@ -217,8 +227,8 @@ namespace gitdb
                         throw new NotImplementedException("Unsupported object type: " + DbObjectModel.ObjectType);
                 }
 
-                Console.WriteLine(subDir.Substring(0, subDir.Length - 1) + " \"" + ObjectChoice +
-                                  "\" successfully scripted to " + filePath);
+                CliUtils.WriteLineInColor(subDir.Substring(0, subDir.Length - 1) + " \"" + ObjectChoice +
+                                  "\" successfully scripted to " + filePath, ConsoleColor.Green);
 
                 CliUtils.PressEscapeToQuit();
             }

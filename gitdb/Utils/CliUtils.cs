@@ -10,13 +10,15 @@ namespace gitdb.Utils
     {
         public static void PressEscapeToQuit()
         {
+            Console.WriteLine();
             Console.WriteLine("Press ESC to quit or any other key to continue.");
 
             ConsoleKey nextKey = Console.ReadKey(true).Key;
-            if (nextKey == ConsoleKey.Escape)
-            {
-                Environment.Exit(0);
-            }
+
+            if (nextKey != ConsoleKey.Escape) return;
+
+            WriteLineInColor("Good day!", ConsoleColor.DarkBlue);
+            Environment.Exit(0);
         }
 
         /// <summary>
@@ -49,6 +51,7 @@ namespace gitdb.Utils
         /// <returns></returns>
         public static string GetUserInput(string prompt)
         {
+            Console.WriteLine();
             Console.WriteLine(prompt);
 
             return Console.ReadLine();
