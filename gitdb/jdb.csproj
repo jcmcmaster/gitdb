@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{4086FDCF-9C6A-4133-95E1-A4B6B047BF6D}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>gitdb</RootNamespace>
-    <AssemblyName>gitdb</AssemblyName>
+    <RootNamespace>jdb</RootNamespace>
+    <AssemblyName>jdb</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using gitdb.Models;
+using jdb.Models;
 using Microsoft.Win32;
 
-namespace gitdb.Utils
+namespace jdb.Utils
 {
     public static class DbUtils
     {

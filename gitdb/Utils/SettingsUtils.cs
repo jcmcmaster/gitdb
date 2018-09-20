@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace gitdb.Utils
+namespace jdb.Utils
 {
     public static class SettingsUtils
     {
