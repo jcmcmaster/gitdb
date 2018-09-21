@@ -46,14 +46,16 @@ namespace jdb
         [STAThread]
         private static void Main(string[] args)
         {            
+            Console.WriteLine();            
+            CliUtils.WriteLineInColor("Welcome to jdb", ConsoleColor.Cyan);            
             Console.WriteLine();
-            
-            CliUtils.WriteLineInColor("Welcome to jdb v0.5", ConsoleColor.Cyan);            
 
             Settings = SettingsUtils.InitSettings();
 
             SetServer(args);
             SetDb(args);
+
+            SettingsUtils.WriteSettings(Settings);
 
             while (true)
             {
@@ -90,9 +92,7 @@ namespace jdb
                         continue;
                     }
 
-                    ObjectChoice = objectChoiceParts[1];
-
-                    SettingsUtils.WriteSettings(Settings);
+                    ObjectChoice = objectChoiceParts[1];                    
 
                     DbObjectModel =
                         DbUtils.GetDbObject(ServerChoice.Name, DbChoice.Name, SchemaChoice.Name, ObjectChoice);
@@ -246,12 +246,12 @@ namespace jdb
         {
             if (Settings["db_" + Environment.CurrentDirectory] == null || args.Has("-o"))
             {
-                DbChoice = ServerChoice.Databases[CliUtils.GetUserSelection<string>("Select a database:",
+                DbChoice = ServerChoice.Databases[CliUtils.GetUserSelection<string>(Environment.NewLine + "Select a database:",
                     ServerChoice.Databases.Cast<Database>().Where(x => x.IsSystemObject == false)
                         .Select(x => x.Name).ToList())];
 
                 Settings["db_" + Environment.CurrentDirectory] = DbChoice.Name;
-                Console.WriteLine("DB choice saved. Use 'jdb -o' to override saved settings.");
+                Console.WriteLine(Environment.NewLine + "DB choice saved. Use 'jdb -o' to override saved settings.");
             }
             else
             {
@@ -267,7 +267,7 @@ namespace jdb
             if (Settings["server_" + Environment.CurrentDirectory] == null || args.Has("-o"))
             {
                 ServerChoice =
-                    new Server(CliUtils.GetUserSelection<string>("Select a server:", DbUtils.GetSqlServers()));
+                    new Server(CliUtils.GetUserSelection<string>(Environment.NewLine + "Select a server:", DbUtils.GetSqlServers()));
 
                 Settings["server_" + Environment.CurrentDirectory] = ServerChoice.Name;
                 Console.WriteLine("Server choice saved. Use 'jdb -o' to override saved settings.");
