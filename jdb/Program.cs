@@ -48,7 +48,7 @@ namespace jdb
         {            
             Console.WriteLine();
             
-            CliUtils.WriteLineInColor("Welcome to jdb v0.4", ConsoleColor.Cyan);            
+            CliUtils.WriteLineInColor("Welcome to jdb v0.5", ConsoleColor.Cyan);            
 
             Settings = SettingsUtils.InitSettings();
 

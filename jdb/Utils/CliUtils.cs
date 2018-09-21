@@ -17,7 +17,7 @@ namespace jdb.Utils
         public static void PressEscapeToQuit()
         {
             Console.WriteLine();
-            Console.WriteLine("Press ESC to quit or any other key to continue.");
+            Console.WriteLine("Press ESC to quit or any other key to continue...");
 
             ConsoleKey nextKey = Console.ReadKey(true).Key;
 
