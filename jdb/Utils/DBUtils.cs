@@ -102,5 +102,64 @@ namespace jdb.Utils
 
             }
         }
+
+        public static string[] GetAllDbObjectNames(string serverChoice, string dbChoice, string input)
+        {
+            using (SqlCommand cmd = GetCommand(serverChoice, dbChoice))
+            {
+                cmd.CommandText = @"
+                    SELECT s.[name] + '.' + ao.[name] ObjName
+                    FROM sys.all_objects ao
+                    LEFT JOIN sys.schemas s
+                    ON s.schema_id = ao.schema_id
+                    WHERE s.[name] + '.' + ao.[name] LIKE @input + '%';
+                ";
+
+                cmd.Parameters.Clear();
+                cmd.Parameters.Add(new SqlParameter("@input", SqlDbType.VarChar) { Value = input });
+
+                DataTable dtData = cmd.ToDataTable();
+
+                if (dtData.Rows.Count <= 0) return new string[] { };
+
+                var schemaObjects = new List<string>();
+
+                foreach (DataRow dr in dtData.Rows)
+                {
+                    schemaObjects.Add(dr["ObjName"].ToString());
+                }
+
+                return schemaObjects.ToArray();
+            }
+        }
+
+        public static HashSet<string> GetAllDbObjectHashSet(string serverChoice, string dbChoice, string input)
+        {
+            using (SqlCommand cmd = GetCommand(serverChoice, dbChoice))
+            {
+                var results = new HashSet<string>();
+
+                cmd.CommandText = @"
+                    SELECT s.[name] + '.' + ao.[name] ObjName
+                    FROM sys.all_objects ao
+                    LEFT JOIN sys.schemas s
+                    ON s.schema_id = ao.schema_id;
+                ";
+
+                cmd.Parameters.Clear();
+                cmd.Parameters.Add(new SqlParameter("@input", SqlDbType.VarChar) { Value = input });
+
+                DataTable dtData = cmd.ToDataTable();
+
+                if (dtData.Rows.Count <= 0) return results;
+
+                foreach (DataRow dr in dtData.Rows)
+                {
+                    results.Add(dr["ObjName"].ToString());
+                }
+
+                return results;
+            }
+        }
     }
 }

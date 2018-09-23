@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using jdb.Models;
 using jdb.Utils;
 using View = Microsoft.SqlServer.Management.Smo.View;
@@ -45,9 +46,11 @@ namespace jdb
 
         [STAThread]
         private static void Main(string[] args)
-        {            
-            Console.WriteLine();            
-            CliUtils.WriteLineInColor("Welcome to jdb", ConsoleColor.Cyan);            
+        {
+            ReadLine.AutoCompletionHandler = new AutoCompletionHandler();
+
+            Console.WriteLine();
+            CliUtils.WriteLineInColor("Welcome to jdb", ConsoleColor.Cyan);
             Console.WriteLine();
 
             Settings = SettingsUtils.InitSettings();
@@ -70,7 +73,7 @@ namespace jdb
                     CliUtils.WriteInColor("object", ConsoleColor.Blue);
                     Console.WriteLine(")");
 
-                    ObjectChoice = Console.ReadLine() ?? "";
+                    ObjectChoice = ReadLine.Read() ?? "";
 
                     if (!ObjectChoice.Contains('.'))
                     {
@@ -92,7 +95,7 @@ namespace jdb
                         continue;
                     }
 
-                    ObjectChoice = objectChoiceParts[1];                    
+                    ObjectChoice = objectChoiceParts[1];
 
                     DbObjectModel =
                         DbUtils.GetDbObject(ServerChoice.Name, DbChoice.Name, SchemaChoice.Name, ObjectChoice);
@@ -224,7 +227,7 @@ namespace jdb
                         break;
                     case "SERVICE_QUEUE":
 
-                    
+
                     case "DEFAULT_CONSTRAINT":
                     case "FOREIGN_KEY_CONSTRAINT":
                     case "PRIMARY_KEY_CONSTRAINT":
@@ -239,6 +242,40 @@ namespace jdb
                                   "\" successfully scripted to " + filePath, ConsoleColor.Green);
 
                 CliUtils.PressEscapeToQuit();
+            }
+        }
+
+        public class AutoCompletionHandler : IAutoCompleteHandler
+        {
+            // characters to start completion from
+            public char[] Separators { get; set; } = {};
+
+            // text - The current text entered in the console
+            // index - The index of the terminal cursor within {text}
+            public string[] GetSuggestions(string text, int index)
+            {
+                string[] matches = DbUtils.GetAllDbObjectNames(ServerChoice.Name, DbChoice.Name, text);
+
+                if (matches.Length <= 1) return matches;
+
+                //foreach (string s in matches)
+                //{
+                //    Console.Write(s + "\t");
+                //}
+
+                //Console.WriteLine();
+
+                //for (var i = 0; i < matches.Length; i++)
+                //{
+                //    string s = matches[i];
+                //    matches[i] = s.Substring(index, s.Length - index);
+                //}
+
+                string commonSubstring = GetCommonSubstring(matches);
+
+                return index == 0
+                    ? new[] { commonSubstring }
+                    : new[] { commonSubstring.Replace(text, "") };
             }
         }
 
@@ -279,6 +316,22 @@ namespace jdb
 
             CliUtils.WriteInColor("SELECTED SERVER: ", ConsoleColor.DarkCyan);
             Console.WriteLine(ServerChoice.Name);
+        }
+
+        protected static string GetCommonSubstring(string[] possibleStrings)
+        {
+            string common = possibleStrings[0];
+
+            foreach (string i in possibleStrings)
+            {
+                while (!i.StartsWith(common, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    common = common.Substring(0, common.Length - 1);
+                    if (common == "") break;
+                }
+            }
+
+            return common;
         }
     }
 }
