@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27428.2005
+VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "jdb", "jdb\jdb.csproj", "{4086FDCF-9C6A-4133-95E1-A4B6B047BF6D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "jdb", "jdb\jdb.csproj", "{FB31825E-F5A3-48D5-8E7B-689AD7A48D4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4086FDCF-9C6A-4133-95E1-A4B6B047BF6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4086FDCF-9C6A-4133-95E1-A4B6B047BF6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4086FDCF-9C6A-4133-95E1-A4B6B047BF6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4086FDCF-9C6A-4133-95E1-A4B6B047BF6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB31825E-F5A3-48D5-8E7B-689AD7A48D4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB31825E-F5A3-48D5-8E7B-689AD7A48D4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB31825E-F5A3-48D5-8E7B-689AD7A48D4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB31825E-F5A3-48D5-8E7B-689AD7A48D4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {BAD80C3D-755B-41DA-93C6-E5053231118F}
+		SolutionGuid = {4C3D324A-54FD-4A74-9A0E-DFB2B061A5A4}
 	EndGlobalSection
 EndGlobal

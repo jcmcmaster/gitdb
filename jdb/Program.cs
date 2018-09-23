@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 using jdb.Models;
 using jdb.Utils;
 using View = Microsoft.SqlServer.Management.Smo.View;
@@ -248,7 +247,7 @@ namespace jdb
         public class AutoCompletionHandler : IAutoCompleteHandler
         {
             // characters to start completion from
-            public char[] Separators { get; set; } = {};
+            public char[] Separators { get; set; } = { };
 
             // text - The current text entered in the console
             // index - The index of the terminal cursor within {text}
