@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using jdb.Models;
 using jdb.Utils;
 using View = Microsoft.SqlServer.Management.Smo.View;
@@ -46,7 +47,12 @@ namespace jdb
         [STAThread]
         private static void Main(string[] args)
         {
+            // set up auto complete
             ReadLine.AutoCompletionHandler = new AutoCompletionHandler();
+
+            // register Windows-1252 encoding b/c we're in dotnet core
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            ScriptOptions.Encoding = CodePagesEncodingProvider.Instance.GetEncoding(1252);
 
             Console.WriteLine();
             CliUtils.WriteLineInColor("Welcome to jdb", ConsoleColor.Cyan);
